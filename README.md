@@ -1,5 +1,5 @@
 # Analizador_L-xico-
-Analizador léxico del lenguaje C con FLEX y Qt
+Analizador léxico, sintactico y semantico del lenguaje C con FLEX y Qt
 
  Cómo compilar
 1. Tener instalado Qt 6 y WinFlexBison
