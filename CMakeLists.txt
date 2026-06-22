@@ -36,17 +36,26 @@ set_source_files_properties(
 )
 
 set(PROJECT_SOURCES
+
     main.cpp
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
-    "${CMAKE_CURRENT_SOURCE_DIR}/lex.yy.c"
+
+    lexer.l
+    parser.y
+
+    lex.yy.c
+    parser.tab.c
+    parser.tab.h
+
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(AnalizadorLexico
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        parser.tab.c parser.tab.h parser.y
     )
 else()
     add_executable(AnalizadorLexico ${PROJECT_SOURCES})

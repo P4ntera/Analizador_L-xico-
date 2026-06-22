@@ -11,10 +11,20 @@
 
 /* ── Declaraciones de FLEX ── */
 extern "C" {
+
 extern FILE *yyin;
 extern FILE *salida;
+
+extern int yyparse();
 extern int token_id;
-int yylex();
+
+extern int sintacticoCorrecto;
+extern int semanticoCorrecto;
+extern int totalSimbolos;
+extern char ultimoErrorSemantico[200];
+
+void limpiarTabla();
+
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -77,10 +87,38 @@ void MainWindow::on_btnAnalizar_clicked()
     fprintf(salida, "%s\n",
             "------------------------------------------------------");
 
-    yylex();
+    sintacticoCorrecto = 1;
+    semanticoCorrecto = 1;
 
+    limpiarTabla();
+
+    strcpy(ultimoErrorSemantico, "");
+
+    yyparse();
+
+    yyparse();
+
+    if(semanticoCorrecto)
+    {
+        ui->lblSemantico->setText("✓ Semántica correcta");
+    }
+    else
+    {
+        ui->lblSemantico->setText(
+            QString::fromUtf8(ultimoErrorSemantico)
+            );
+    }
     fclose(yyin);
     fclose(salida);
+
+    if (sintacticoCorrecto)
+    {
+        ui->txtSintaxis->setText("✓ Sintaxis correcta");
+    }
+    else
+    {
+        ui->txtSintaxis->setText("✗ Error sintáctico");
+    }
 
     QFile res(pathSalida);
     if (!res.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -96,6 +134,8 @@ void MainWindow::on_btnLimpiar_clicked()
 {
     ui->txtEntrada->clear();
     ui->txtResultado->clear();
+    ui->txtSintaxis->clear();
+    ui->lblSemantico->clear();
 }
 
 void MainWindow::on_btnSalir_clicked()
